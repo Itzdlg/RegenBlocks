@@ -1,0 +1,8 @@
+main: me.schooltests.regenblocks.RegenBlocks
+name: RegenBlocks
+version: "1.0.0"
+commands:
+  regenblocks:
+    usage: "/regenblocks"
+    description: "Main command for RegenBlocks plugin"
+    aliases: ["rblocks", "regenb"]

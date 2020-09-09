@@ -1,0 +1,19 @@
+# What is the required number of blocks that
+# a player has to break before
+# the regeneration data saves;
+# this will prevent severe data loss
+# in the case of a crash
+
+# -1 for never
+num-blocks-broken-before-save: 10
+
+# Check if blocks need to
+# be regenerated timer
+# delay in ticks
+regen-timer: 10
+
+# Should the plugin cancel
+# unloading of chunks
+# that exist within a
+# regenerating region?
+deny-unload: true
