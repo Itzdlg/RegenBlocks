@@ -49,7 +49,9 @@ public final class RegenBlocksAPI {
             if (res == null) return;
             for (RegenRegion r : res)
                 regions.put(r.getId().toLowerCase(), r);
-        } catch (IOException e) { }
+        } catch (IOException e) {
+            Bukkit.getLogger().severe("Unable to load regions file!");
+        }
 
         for (RegenRegion r : regions.values()) {
             regen(r, true);
