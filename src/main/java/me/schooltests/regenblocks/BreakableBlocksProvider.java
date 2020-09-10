@@ -25,8 +25,7 @@ public class BreakableBlocksProvider implements Listener {
     private static final Map<UUID, Consumer<List<Material>>> editing = new HashMap<>();
     public static void prompt(Player player, RegenRegion region, Consumer<List<Material>> handle) {
         editing.put(player.getUniqueId(), handle);
-        Inventory inv = Bukkit.createInventory(null, 4 * 9,
-                ChatColor.GRAY + "Setting: " + ChatColor.GOLD + "Breakable Blocks");
+        Inventory inv = Bukkit.createInventory(null, 4 * 9, Util.color("&7Setting: &6Breakable Blocks"));
 
         ItemStack filler = new ItemStack(Material.STAINED_GLASS_PANE, 1);
         filler.setDurability((short) 7);
@@ -63,7 +62,7 @@ public class BreakableBlocksProvider implements Listener {
     public void onClick(InventoryClickEvent event) {
         if (Util.invalidInventoryClick(event)) return;
         if (editing.containsKey(event.getWhoClicked().getUniqueId())
-                && event.getClickedInventory().getName().equals(ChatColor.GRAY + "Setting: " + ChatColor.GOLD + "Breakable Blocks")) {
+                && event.getClickedInventory().getName().equals(Util.color("&7Setting: &6Breakable Blocks"))) {
             if (event.getSlot() <= 6) event.setCancelled(true);
             if (event.getSlot() == 7) {
                 List<Material> m = new ArrayList<>();

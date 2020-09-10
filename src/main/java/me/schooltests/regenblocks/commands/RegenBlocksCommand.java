@@ -4,6 +4,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import me.schooltests.regenblocks.RegenBlocks;
 import me.schooltests.regenblocks.RegenBlocksAPI;
+import me.schooltests.regenblocks.Util;
 import me.schooltests.regenblocks.regions.RegenRegion;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -24,14 +25,13 @@ public class RegenBlocksCommand implements CommandExecutor {
         this.plugin = plugin;
         this.API = plugin.getAPI();
 
-        usage = ChatColor.GRAY + "Command: " + ChatColor.GOLD + "/rblocks"
-                + "\n" + ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + repeat("-", 27)
-                + "\n" + ChatColor.translateAlternateColorCodes('&',
-                    "&7/rblocks &6create <name> <region>"
-                    + "\n&7/rblocks &6delete <name>"
-                    + "\n&7/rblocks &6edit <name> <setting> <value>"
-                    + "\n&7/rblocks &6info [name]"
-                ) + "\n" + ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + repeat("-", 27);
+        usage = Util.color("&7Command: &6/rblocks\n&7%s" +
+                "\n&7/rblocks &6create <name> <region>" +
+                "\n&7/rblocks &6delete <name>" +
+                "\n&7/rblocks &6edit <name> <setting> <value>" +
+                "\n&7/rblocks &6info [name]" +
+                "\n&7%{0}", ChatColor.STRIKETHROUGH + repeat("-", 27));
+
     }
 
     @Override
@@ -76,10 +76,7 @@ public class RegenBlocksCommand implements CommandExecutor {
                 }
 
                 RegenRegion r = API.createRegenRegion(args[1], player.getWorld(), pr);
-                player.sendMessage(ChatColor.GRAY + "Successfully created a new regenerating region named "
-                        + ChatColor.GOLD + r.getId() + ChatColor.GRAY
-                        + " in worldguard region " + ChatColor.GOLD + pr.getId()
-                        + ChatColor.GRAY + "!");
+                player.sendMessage(Util.color("&7Successfully created a new regenerating region named &6%s &7in worldguard region &6%s&7!", r.getId(), pr.getId()));
                 break;
             }
             case "del":
@@ -98,7 +95,7 @@ public class RegenBlocksCommand implements CommandExecutor {
                 }
 
                 API.deleteRegion(r);
-                player.sendMessage(ChatColor.GRAY + "Deleted regenerating region named " + ChatColor.GOLD + r.getId() + ChatColor.GRAY + "!");
+                player.sendMessage(Util.color("&7Deleted regenerating region named &6%s&7!", r.getId()));
                 break;
             }
             case "e":
@@ -116,8 +113,7 @@ public class RegenBlocksCommand implements CommandExecutor {
 
                 RegionSetting setting = RegionSetting.match(args[2]);
                 if (setting == null) {
-                    player.sendMessage(ChatColor.GRAY + "Modifiable settings: " + ChatColor.GOLD
-                            + String.join(", ", RegionSetting.displayValues()));
+                    player.sendMessage(Util.color("&7Modifiable settings: &6%s", String.join(", ", RegionSetting.displayValues())));
                     return true;
                 } else if (setting != RegionSetting.BREAKABLE_BLOCKS && args.length < 4) {
                     player.sendMessage(usage);
@@ -126,8 +122,7 @@ public class RegenBlocksCommand implements CommandExecutor {
 
                 String stringValue = setting != RegionSetting.BREAKABLE_BLOCKS ? args[3] : "";
                 boolean success = editCommand.execute(player, region, setting, stringValue);
-                if (!success) player.sendMessage(ChatColor.GRAY + "Modifiable settings: " + ChatColor.GOLD
-                        + String.join(", ", RegionSetting.displayValues()));
+                if (!success) player.sendMessage(Util.color("&7Modifiable settings: &6%s", String.join(", ", RegionSetting.displayValues())));
                 break;
             }
             case "list":
@@ -144,16 +139,14 @@ public class RegenBlocksCommand implements CommandExecutor {
                     else if (r.getRegion() == null && r.isGlobal()) region = "__global__";
                     else if (r.getRegion() != null) region = r.getRegion().getId();
 
-                    String msg = ChatColor.GRAY +
-                            "Settings for " +
-                            ChatColor.GOLD + r.getId() +
-                            ChatColor.GRAY + ": " +
-                            "\n" + ChatColor.GRAY + "Regeneration Seconds: " + ChatColor.GOLD + r.getRegenerationSeconds() +
-                            "\n" + ChatColor.GRAY + "World: " + ChatColor.GOLD + r.getWorld().getName() +
-                            "\n" + ChatColor.GRAY + "WorldGuard Region: " + ChatColor.GOLD + region +
-                            "\n" + ChatColor.GRAY + "Regen Blocks Destroyed By Creative: " + ChatColor.GOLD + r.isRegenDestroyedByCreative() +
-                            "\n" + ChatColor.GRAY + "Allow Placing: " + ChatColor.GOLD + r.isAllowPlacing();
-                    player.sendMessage(msg);
+                    String msg = "&7Settings for &6%s&7:" +
+                            "\n&7Regeneration Seconds: &6%s" +
+                            "\n&7World: &6%s" +
+                            "\n&7WorldGuard Region: &6%s" +
+                            "\n&7Regen Blocks Destroyed By Creative: &6%s" +
+                            "\n&7Allow Placing: &6%s";
+                    player.sendMessage(Util.color(msg, r.getId(), r.getRegenerationSeconds(), r.getWorld().getName(),
+                            region, r.isRegenDestroyedByCreative(), r.isAllowPlacing()));
                 } else if (API.getRegionMap().size() == 0) {
                     player.sendMessage(ChatColor.GRAY + "There are no regenerating regions!");
                 } else { // Prints a list of regenerating regions

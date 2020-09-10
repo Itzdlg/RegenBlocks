@@ -3,7 +3,6 @@ package me.schooltests.regenblocks.commands;
 import me.schooltests.regenblocks.BreakableBlocksProvider;
 import me.schooltests.regenblocks.Util;
 import me.schooltests.regenblocks.regions.RegenRegion;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -26,7 +25,7 @@ class EditCommand {
             case BREAKABLE_BLOCKS: {
                 BreakableBlocksProvider.prompt(player, region, (value) -> {
                     region.setBreakableBlocks(value);
-                    player.sendMessage(ChatColor.GRAY + "Updated setting " + ChatColor.GOLD + setting + ChatColor.GRAY + " to be " + ChatColor.GOLD + Arrays.toString(value.toArray()) + ChatColor.GRAY + "!");
+                    player.sendMessage(Util.color("&7Updated setting &6%s&7 to be &6%s&7!", setting, Arrays.toString(value.toArray())));
                 });
                 break;
             }
@@ -41,8 +40,7 @@ class EditCommand {
         }
 
         if (!stringValue.isEmpty())
-            player.sendMessage(ChatColor.GRAY + "Updated setting " + ChatColor.GOLD + setting + ChatColor.GRAY
-                    + " to be " + ChatColor.GOLD + stringValue.toUpperCase() + ChatColor.GRAY + "!");
+            player.sendMessage(Util.color("&7Updated setting &6%s&7 to be &6%s&7!", setting, stringValue.toUpperCase()));
         return true;
     }
 }

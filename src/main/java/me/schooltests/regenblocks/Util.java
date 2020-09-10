@@ -5,6 +5,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -21,9 +22,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 public final class Util {
-    public Util() {
-        throw new UnsupportedOperationException("Util may not be instantiated");
-    }
+    private Util() {}
 
     public static boolean regionExistsAtChunk(Chunk chunk, ProtectedRegion region) {
         if (chunk == null || region == null) return false;
@@ -116,5 +115,13 @@ public final class Util {
 
     public static Boolean toBool(String val) {
         return toBool(val, null);
+    }
+
+    public static String color(String msg, Object... formats) {
+        for (int i = 0; i < formats.length; i++) {
+            msg = msg.replaceFirst("%s", formats[i].toString())
+                    .replaceAll("%\\{" + i + "}", formats[i].toString());
+        }
+        return ChatColor.translateAlternateColorCodes('&', msg);
     }
 }
