@@ -3,15 +3,14 @@ package me.schooltests.regenblocks.regions;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class RegenRegion {
@@ -23,7 +22,7 @@ public final class RegenRegion {
     private List<String> breakableBlocks;
     private boolean regenDestroyedByCreative;
 
-    private Map<Location, RegenData> regenerationData;
+    private Set<RegenData> regenerationData;
 
     public RegenRegion(String id, World world, ProtectedRegion region) {
         this.id = id.toLowerCase();
@@ -34,7 +33,7 @@ public final class RegenRegion {
         this.allowPlacing = false;
         this.breakableBlocks = new ArrayList<>();
         this.regenDestroyedByCreative = false;
-        this.regenerationData = new HashMap<>();
+        this.regenerationData = new HashSet<>();
     }
 
     public String getId() {
@@ -86,7 +85,7 @@ public final class RegenRegion {
         this.regenDestroyedByCreative = regenDestroyedByCreative;
     }
 
-    public Map<Location, RegenData> getRegenerationData() {
+    public Set<RegenData> getRegenerationData() {
         return regenerationData;
     }
 }

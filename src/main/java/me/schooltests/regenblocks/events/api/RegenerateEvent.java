@@ -2,30 +2,36 @@ package me.schooltests.regenblocks.events.api;
 
 import me.schooltests.regenblocks.regions.RegenData;
 import me.schooltests.regenblocks.regions.RegenRegion;
-import org.bukkit.Location;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class RegenerateEvent extends Event implements Cancellable {
     private static final HandlerList handlerList = new HandlerList();
+
+    /**
+     * Bukkit Event implementation for listening to events
+     * @return HandlerList for this event
+     */
     public static HandlerList getHandlerList() {
         return handlerList;
     }
 
+    /**
+     * Bukkit Event implementation for listening to events
+     * @return HandlerList for this event
+     */
     public HandlerList getHandlers() {
         return handlerList;
     }
 
     private boolean cancelled;
-    private RegenData data;
+    private RegenData regenData;
     private RegenRegion region;
-    private Location location;
 
-    public RegenerateEvent(RegenRegion region, RegenData data, Location location) {
+    public RegenerateEvent(RegenRegion region, RegenData regenData) {
         this.region = region;
-        this.data = data;
-        this.location = location;
+        this.regenData = regenData;
         this.cancelled = false;
     }
 
@@ -39,19 +45,15 @@ public class RegenerateEvent extends Event implements Cancellable {
         this.cancelled = b;
     }
 
-    public RegenData getData() {
-        return data;
+    public RegenData getRegenData() {
+        return regenData;
     }
 
-    public void setData(RegenData data) {
-        this.data = data;
+    public void setRegenData(RegenData regenData) {
+        this.regenData = regenData;
     }
 
     public RegenRegion getRegion() {
         return region;
-    }
-
-    public Location getLocation() {
-        return location;
     }
 }

@@ -50,7 +50,7 @@ public class RegenEvents implements Listener {
 
     @EventHandler
     public void onRegenerate(RegenerateEvent event) {
-        playerPlaced.remove(event.getLocation());
+        playerPlaced.remove(event.getRegenData().getLocation());
     }
 
     private RegenRegion getRegenRegion(Location l) {
@@ -75,7 +75,7 @@ public class RegenEvents implements Listener {
         if (r == null
                 || (!r.isRegenDestroyedByCreative() && p.getGameMode() == GameMode.CREATIVE)) return false;
         if (r.getBreakableBlocks().contains(b.getType())) {
-            r.getRegenerationData().put(b.getLocation(), new RegenData(b.getType(), b.getData()));
+            r.getRegenerationData().add(new RegenData(b.getLocation(), b.getType(), b.getData()));
             brokenBlocks++;
 
             if (plugin.getConfig().getInt("num-blocks-broken-before-save") != -1 && brokenBlocks >= plugin.getConfig().getInt("num-blocks-broken-before-save")) {

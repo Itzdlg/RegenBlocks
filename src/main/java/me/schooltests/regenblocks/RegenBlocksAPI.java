@@ -92,17 +92,18 @@ public final class RegenBlocksAPI {
     }
 
     private void regen(RegenRegion region, boolean ignoreTime) {
-        for (Location location : new ArrayList<>(region.getRegenerationData().keySet())) {
-            RegenData blockData = region.getRegenerationData().get(location);
-            if (!ignoreTime && !blockData.getTimeBroken().plus(region.getRegenerationSeconds(), ChronoUnit.SECONDS).isBefore(Instant.now()))
+        for (RegenData originData : new ArrayList<>(region.getRegenerationData())) {
+            if (!ignoreTime && !originData.getTimeBroken().plus(region.getRegenerationSeconds(), ChronoUnit.SECONDS).isBefore(Instant.now()))
                 return;
 
             // Call the RegenerateEvent event, allow for other plugins to change regeneration data
-            RegenerateEvent event = new RegenerateEvent(region, blockData, location);
+            RegenerateEvent event = new RegenerateEvent(region, originData);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) return;
 
-            blockData = event.getData();
+            RegenData blockData = event.getRegenData();
+
+            Location location = blockData.getLocation();
             Block block = region.getWorld().getBlockAt(location);
             if (block.getType() != null && block.getType() != Material.AIR)
                 location.getWorld().dropItem(location, new ItemStack(block.getType(), 1)); // Drop the placed block if necessary
@@ -111,7 +112,7 @@ public final class RegenBlocksAPI {
             block.setType(blockData.getMaterial());
             block.setData(blockData.getBlockDamage());
 
-            region.getRegenerationData().remove(location);
+            region.getRegenerationData().remove(originData);
         }
     }
 
