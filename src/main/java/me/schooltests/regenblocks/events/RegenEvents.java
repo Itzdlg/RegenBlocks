@@ -56,9 +56,12 @@ public class RegenEvents implements Listener {
     private RegenRegion getRegenRegion(Location l) {
         Set<ProtectedRegion> regionsAt = Util.getRegionsAt(l);
         for (RegenRegion r : plugin.getAPI().getRegionMap().values()) {
-            if (r.getWorld().getName().equals(l.getWorld().getName()) && r.isGlobal())
-                return r;
-            else if (r.getRegion() != null && regionsAt.contains(r.getRegion()))
+            String regionWorld = r.getWorld().getName();
+            String world = l.getWorld().getName();
+
+            boolean equalWorld = regionWorld.equals(world) && r.isGlobal();
+            boolean containsRegion = r.getRegion() != null && regionsAt.contains(r.getRegion());
+            if (equalWorld || containsRegion)
                 return r;
         }
 
