@@ -21,6 +21,7 @@ public class RegenBlocksCommand implements CommandExecutor {
 
     private final EditCommand editCommand = new EditCommand();
     private final String usage;
+    private final String noPerm;
     public RegenBlocksCommand(RegenBlocks plugin) {
         this.plugin = plugin;
         this.API = plugin.getAPI();
@@ -32,10 +33,16 @@ public class RegenBlocksCommand implements CommandExecutor {
                 "\n&7/rblocks &6info [name]" +
                 "\n&7%{0}", ChatColor.STRIKETHROUGH + repeat("-", 27));
 
+        noPerm = ChatColor.RED + "You do not have the required permissions to execute this command!";
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("regenblocks.use")) {
+            sender.sendMessage(noPerm);
+            return true;
+        }
+
         if (args.length == 0) {
             sender.sendMessage(usage);
             return true;
@@ -51,6 +58,11 @@ public class RegenBlocksCommand implements CommandExecutor {
             case "new":
             case "add":
             case "create": {
+                if (!player.hasPermission("regenblocks.create")) {
+                    sender.sendMessage(noPerm);
+                    return true;
+                }
+
                 if (args.length < 3) {
                     player.sendMessage(usage);
                     return true;
@@ -83,6 +95,11 @@ public class RegenBlocksCommand implements CommandExecutor {
             case "rem":
             case "remove":
             case "delete": {
+                if (!player.hasPermission("regenblocks.delete")) {
+                    sender.sendMessage(noPerm);
+                    return true;
+                }
+
                 if (args.length < 2) {
                     player.sendMessage(usage);
                     return true;
@@ -100,13 +117,18 @@ public class RegenBlocksCommand implements CommandExecutor {
             }
             case "e":
             case "edit": {
+                if (!player.hasPermission("regenblocks.edit")) {
+                    sender.sendMessage(noPerm);
+                    return true;
+                }
+
                 if (args.length < 3) {
                     player.sendMessage(usage);
                     return true;
                 }
 
                 RegenRegion region = toRegenRegion(args[1]);
-                if (region == null) { // Does the region given exist?
+                if (region == null) { // Does the region given not exist?
                     player.sendMessage(usage);
                     return true;
                 }
