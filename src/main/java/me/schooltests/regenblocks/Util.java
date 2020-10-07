@@ -5,6 +5,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import me.schooltests.regenblocks.regions.RegenRegion;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -41,6 +42,23 @@ public final class Util {
 
     public static Set<ProtectedRegion> getRegionsAt(Location l) {
         return WorldGuardPlugin.inst().getRegionManager(l.getWorld()).getApplicableRegions(l).getRegions();
+    }
+
+    public static RegenRegion getRegenRegionAtLocation(Location l) {
+        RegenBlocks plugin = RegenBlocks.getPlugin(RegenBlocks.class);
+
+        Set<ProtectedRegion> regionsAt = getRegionsAt(l);
+        for (RegenRegion r : plugin.getAPI().getRegionMap().values()) {
+            String regionWorld = r.getWorld().getName();
+            String world = l.getWorld().getName();
+
+            boolean equalWorld = regionWorld.equals(world) && r.isGlobal();
+            boolean containsRegion = r.getRegion() != null && regionsAt.contains(r.getRegion());
+            if (equalWorld || containsRegion)
+                return r;
+        }
+
+        return null;
     }
 
     public static void save(File file, String data, Consumer<String> completion) {

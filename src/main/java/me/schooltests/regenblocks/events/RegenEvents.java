@@ -1,6 +1,5 @@
 package me.schooltests.regenblocks.events;
 
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import me.schooltests.regenblocks.RegenBlocks;
 import me.schooltests.regenblocks.Util;
 import me.schooltests.regenblocks.events.api.RegenerateEvent;
@@ -11,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -32,7 +32,7 @@ public class RegenEvents implements Listener {
 
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
-        RegenRegion r = getRegenRegion(event.getBlockPlaced().getLocation());
+        RegenRegion r = Util.getRegenRegionAtLocation(event.getBlockPlaced().getLocation());
         if (r == null) return;
 
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE)
@@ -43,29 +43,16 @@ public class RegenEvents implements Listener {
         } else event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBreak(BlockBreakEvent event) {
-        event.setCancelled(breakBlock(event.getBlock(), event.getPlayer()));
+        if (breakBlock(event.getBlock(), event.getPlayer())) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onRegenerate(RegenerateEvent event) {
         playerPlaced.remove(event.getRegenData().getLocation());
-    }
-
-    private RegenRegion getRegenRegion(Location l) {
-        Set<ProtectedRegion> regionsAt = Util.getRegionsAt(l);
-        for (RegenRegion r : plugin.getAPI().getRegionMap().values()) {
-            String regionWorld = r.getWorld().getName();
-            String world = l.getWorld().getName();
-
-            boolean equalWorld = regionWorld.equals(world) && r.isGlobal();
-            boolean containsRegion = r.getRegion() != null && regionsAt.contains(r.getRegion());
-            if (equalWorld || containsRegion)
-                return r;
-        }
-
-        return null;
     }
 
     private boolean breakBlock(Block b, Player p) {
@@ -74,7 +61,7 @@ public class RegenEvents implements Listener {
             return false;
         }
 
-        RegenRegion r = getRegenRegion(b.getLocation());
+        RegenRegion r = Util.getRegenRegionAtLocation(b.getLocation());
         if (r == null
                 || (!r.isRegenDestroyedByCreative() && p.getGameMode() == GameMode.CREATIVE)) return false;
         if (r.getBreakableBlocks().contains(b.getType())) {
